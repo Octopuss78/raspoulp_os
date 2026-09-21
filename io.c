@@ -36,5 +36,24 @@ enum {
     AUX_MU_BAUD_VAL = (AUX_UART_CLOCK / (UART_BAUD_RATE * 8)) - 1
 };
 
-void mmio_write(long res, unsigned int val);
-unsigned int mmio_red(long reg);
+enum {
+    SYSTMR_CLO = PERIPHERAL_BASE_ADDR + 0x3004
+};
+
+//FUNCTIONS
+
+void mmio_write(unsigned long addr, unsigned int val)
+{
+  *(volatile unsigned int *)addr = val;
+}
+
+unsigned int mmio_read(unsigned long addr)
+{
+  return *(volatile unsigned int *) addr;
+}
+
+void delay_us(unsigned int us)
+{
+    unsigned int start = mmio_read(SYSTMR_CLO);
+    while (mmio_read(SYSTMR_CLO) - start < us);
+}
