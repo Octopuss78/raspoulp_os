@@ -57,3 +57,31 @@ void delay_us(unsigned int us)
     unsigned int start = mmio_read(SYSTMR_CLO);
     while (mmio_read(SYSTMR_CLO) - start < us);
 }
+
+
+void set_alt5(unsigned int pin)
+{
+  unsigned int reg = GPFSEL0 + (pin/10)*4;
+  unsigned int shift = (pin % 10) *3;
+  unsigned int val = mmio_read(reg);
+  val = val & ~(7 << shift);
+  val = val | (GPIO_FUNCTION_ALT5 << shift);
+  mmio_write(reg,val);
+}
+
+void disable_pull(void)
+{
+  // Write No Pull to GPPUD
+  mmio_write(GPPUD,PULL_NONE);
+  delay_us(2);
+
+  //Set pin 14 and 15 in GPPUDCLK0
+  unsigned int tmp = (1 << 14) | (1 << 15);
+  mmio_write(GPPUDCLK0, tmp);
+  delay_us(2);
+
+  //Clean both registers
+  mmio_write(GPPUD, 0);
+  mmio_write(GPPUDCLK0, 0);
+}
+
