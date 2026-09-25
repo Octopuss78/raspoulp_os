@@ -14,12 +14,12 @@ _start:
 2:
   //Main
   //Set stack below
-  ldr x1, _start
+  ldr x1, =_start
   mov sp, x1
 
   //Init BSS
-  ldr x1, __bss_start
-  ldr w2, __bss_size
+  ldr x1, =__bss_start
+  ldr w2, =__bss_size
 3:
   cbz x2, 4f
   str xzr, [x1], #8

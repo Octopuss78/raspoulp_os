@@ -1,8 +1,8 @@
 #include "io.h"
 
-void main()
+void main(void)
 {
   uart_init();
-  uart_writeText("Hello world\n");
+  uart_puts("Hello world\n");
   while(1);
 }

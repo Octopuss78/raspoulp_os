@@ -1,2 +1,8 @@
-void uart_init();
-void uart_writeText(const char *buffer);
+#ifndef IO_H
+#define IO_H
+
+void uart_init(void);
+void uart_putc(char c);
+void uart_puts(const char *s);
+
+#endif

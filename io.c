@@ -121,9 +121,21 @@ void uart_init(void)
 
 void uart_putc(char c)
 {
-  do{
-    unsigned int val = mmio_read(AUX_MU_LSR_REG);
-    
+  //Waiting for FIFO to accept at least 1 byte
+  while (!(mmio_read(AUX_MU_LSR_REG) & (1 << 5)));
+
+  //Write char
+  mmio_write(AUX_MU_IO_REG, c);
+}
+
+void uart_puts(const char *s)
+{
+  int i = 0;
+  while(s[i])
+  {
+    if(s[i]=='\n')
+      uart_putc('\r');
+    uart_putc(s[i]);
+    i++;
   }
-  mmio_write(AUX_MU_IO_REG, )
 }
