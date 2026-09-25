@@ -59,7 +59,7 @@ void delay_us(unsigned int us)
 }
 
 
-void set_alt5(unsigned int pin)
+void gpio_set_alt5(unsigned int pin)
 {
   unsigned int reg = GPFSEL0 + (pin/10)*4;
   unsigned int shift = (pin % 10) *3;
@@ -85,3 +85,45 @@ void disable_pull(void)
   mmio_write(GPPUDCLK0, 0);
 }
 
+void uart_init(void)
+{
+  //Select GPIO ALT5 Function 
+  gpio_set_alt5(14);
+  gpio_set_alt5(15);
+
+  //Disable Pull Resistors
+  disable_pull();
+
+  //Enable Mini UART Auxiliaries
+  mmio_write(AUX_ENABLES, 1);
+    
+  //set TX and RX down for init
+  mmio_write(AUX_MU_CNTL_REG, 0);
+
+  //Set data format to 8 bit-mode
+  mmio_write(AUX_MU_LCR_REG, 3);
+
+  //Setting Baud rate
+  mmio_write(AUX_MU_BAUD_REG, AUX_MU_BAUD_VAL);
+
+  //Making sure IER and MCR are set to zero
+  mmio_write(AUX_MU_MCR_REG, 0);
+  mmio_write(AUX_MU_IER_REG, 0);
+
+  //Clearing receive and transmit FIFO
+  mmio_write(AUX_MU_IIR_REG, 2 | 4);
+
+  //Enable TX and RX
+  mmio_write(AUX_MU_CNTL_REG, 3);
+  
+}
+
+
+void uart_putc(char c)
+{
+  do{
+    unsigned int val = mmio_read(AUX_MU_LSR_REG);
+    
+  }
+  mmio_write(AUX_MU_IO_REG, )
+}
